@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TG Cabin Crew Base Release Check ‚Äî A350-900</title>
+<style>
+:root {
+  --navy: #2C3E50;
+  --navy-light: #34495E;
+  --slate: #5D6D7E;
+  --accent: #2980B9;
+  --accent-light: #EBF5FB;
+  --bg: #F8F9FA;
+  --card: #FFFFFF;
+  --border: #E5E8EB;
+  --text: #2C3141;
+  --text-mid: #5A6270;
+  --text-light: #8B939E;
+  --success: #27AE60;
+  --success-bg: #EAFAF1;
+  --error: #C0392B;
+  --error-bg: #FDEDEC;
+  --warning: #E67E22;
+  --warning-bg: #FEF5E7;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;}
+
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.header-logo{display:flex;align-items:center;gap:10px;}
+.header-logo .tg-mark{width:32px;height:32px;background:var(--navy);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.75rem;}
+.header h1{font-size:1rem;font-weight:600;color:var(--navy);}
+.header .subtitle{font-size:0.75rem;color:var(--text-light);}
+.header-right{margin-left:auto;display:flex;gap:6px;}
+.header-btn{background:transparent;border:1px solid var(--border);color:var(--text-mid);padding:7px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;transition:all 0.2s;}
+.header-btn:hover{background:var(--bg);}
+.header-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+.container{max-width:880px;margin:0 auto;padding:24px 16px;}
+.card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:24px;margin-bottom:16px;box-shadow:var(--shadow);}
+.card h2{font-size:1.1rem;font-weight:600;color:var(--navy);margin-bottom:14px;}
+
+/* Landing */
+.landing-hero{text-align:center;padding:48px 24px 32px;}
+.landing-hero h1{font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.landing-hero .form-id{font-size:0.75rem;color:var(--text-light);margin-bottom:24px;}
+.landing-narrative{max-width:640px;margin:0 auto 32px;font-size:0.95rem;color:var(--text-mid);line-height:1.8;text-align:left;}
+.landing-narrative p{margin-bottom:14px;}
+.criteria-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);max-width:640px;margin:0 auto 28px;overflow:hidden;box-shadow:var(--shadow-md);}
+.criteria-header{background:var(--navy);color:#fff;padding:14px 20px;font-size:0.85rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;}
+.criteria-table{width:100%;border-collapse:collapse;}
+.criteria-table td{padding:11px 20px;border-bottom:1px solid var(--border);font-size:0.9rem;}
+.criteria-table tr:last-child td{border-bottom:none;}
+.criteria-table .tn{width:30px;font-weight:700;color:var(--navy);}
+.criteria-table .tq{text-align:center;color:var(--text-light);font-size:0.8rem;width:70px;}
+.criteria-notes{padding:16px 20px;background:#FAFBFC;border-top:1px solid var(--border);font-size:0.8rem;color:var(--text-mid);line-height:1.7;}
+.criteria-notes ol{padding-left:18px;}
+.criteria-notes li{margin-bottom:4px;}
+.criteria-notes .hl{color:var(--navy);font-weight:600;}
+.landing-cta{text-align:center;padding:8px 0 32px;}
+
+/* Forms */
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:0.8rem;font-weight:600;color:var(--text-mid);margin-bottom:5px;}
+.form-group input,.form-group select{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;outline:none;background:var(--card);}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:6px;font-size:0.9rem;font-weight:600;border:none;cursor:pointer;transition:all 0.15s;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--navy-light);}
+.btn-accent{background:var(--accent);color:#fff;}
+.btn-outline{background:transparent;color:var(--navy);border:1px solid var(--border);}
+.btn-outline:hover{background:var(--bg);}
+.btn-sm{padding:7px 14px;font-size:0.8rem;}
+.btn-block{width:100%;}
+
+/* Assessment */
+.assess-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.assess-meta{font-size:0.8rem;color:var(--text-light);}
+.phase-badge{display:inline-block;padding:3px 10px;border-radius:4px;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;background:var(--accent-light);color:var(--accent);}
+.topic-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:0.7rem;font-weight:600;margin-left:6px;}
+.t-sop{background:#EBF5FB;color:#2471A3;}.t-exit{background:#EAFAF1;color:#1E8449;}.t-o2{background:#FEF9E7;color:#B7950B;}.t-eq{background:#F5EEF8;color:#7D3C98;}.t-ep{background:#FDEDEC;color:#C0392B;}.t-dgr{background:#FEF5E7;color:#CA6F1E;}.t-sec{background:#F2F4F4;color:#566573;}
+
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;}
+.q-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:#FAFBFC;}
+.q-num{font-weight:700;font-size:0.85rem;color:var(--navy);}
+.q-body{padding:18px;}
+.q-prompt{font-size:0.95rem;line-height:1.7;margin-bottom:14px;}
+.q-prompt .sc{color:var(--navy);font-style:italic;background:#F4F6F7;padding:12px 16px;border-radius:6px;display:block;margin-bottom:12px;border-left:3px solid var(--slate);line-height:1.7;}
+.q-prompt .ask{font-weight:600;}
+
+.q-rubric{background:#FAFBFC;border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px;display:none;}
+.q-rubric h4{font-size:0.8rem;font-weight:600;color:var(--navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.3px;}
+.q-rubric ul{padding-left:16px;font-size:0.85rem;color:var(--text-mid);line-height:1.7;}
+.q-rubric .rf{color:var(--error);font-size:0.8rem;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.q-rubric .dp{color:var(--accent);font-size:0.85rem;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+
+.q-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.btn-rubric{font-size:0.75rem;padding:5px 10px;background:transparent;border:1px solid var(--border);color:var(--text-light);border-radius:4px;cursor:pointer;}
+.btn-rubric:hover{background:var(--bg);}
+.btn-rubric.open{background:var(--accent-light);border-color:var(--accent);color:var(--accent);}
+
+.score-btns{display:flex;gap:6px;}
+.score-btn{width:36px;height:36px;border-radius:6px;border:2px solid var(--border);background:var(--card);cursor:pointer;font-weight:700;font-size:0.85rem;transition:all 0.15s;}
+.score-btn:hover{border-color:var(--slate);}
+.score-btn.sb.active{background:var(--success);border-color:var(--success);color:#fff;}
+.score-btn.ub.active{background:var(--error);border-color:var(--error);color:#fff;}
+
+.q-notes textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.8rem;resize:vertical;min-height:44px;font-family:inherit;outline:none;margin-top:10px;}
+.q-notes textarea:focus{border-color:var(--accent);}
+
+.progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:16px;}
+.progress-fill{height:100%;background:var(--accent);transition:width 0.4s;border-radius:2px;}
+
+.phase-divider{padding:12px 0;margin:8px 0;display:flex;align-items:center;gap:12px;}
+.phase-divider .pl{flex:1;height:1px;background:var(--border);}
+.phase-divider .pt{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-light);white-space:nowrap;}
+
+.ts{display:grid;grid-template-columns:1fr auto auto;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;}
+.ts .th{background:var(--navy);color:#fff;padding:10px 16px;font-weight:600;font-size:0.8rem;}
+.ts .tc{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.85rem;display:flex;align-items:center;}
+.ts-s{color:var(--success);font-weight:700;font-size:1rem;justify-content:center;}
+.ts-u{color:var(--error);font-weight:700;font-size:1rem;justify-content:center;}
+.overall-result{text-align:center;padding:20px;margin:16px 0;border-radius:var(--radius);font-size:1.1rem;font-weight:700;}
+.overall-result.pass{background:var(--success-bg);color:var(--success);border:1px solid var(--success);}
+.overall-result.fail{background:var(--error-bg);color:var(--error);border:1px solid var(--error);}
+
+.case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.case-card{border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;}
+.case-card:hover{border-color:var(--slate);box-shadow:var(--shadow-md);}
+.case-card .cn{font-size:0.7rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;}
+.case-card .ct{font-weight:600;color:var(--navy);margin:6px 0 4px;font-size:0.95rem;}
+.case-card .cr{font-size:0.8rem;color:var(--text-light);}
+
+.t-table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+.t-table th{background:var(--navy);color:#fff;padding:9px 12px;text-align:left;font-weight:500;}
+.t-table td{padding:9px 12px;border-bottom:1px solid var(--border);}
+.t-table tr:hover td{background:#FAFBFC;}
+.status-badge{padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:600;}
+.status-badge.pending{background:var(--warning-bg);color:var(--warning);}
+.status-badge.completed{background:var(--success-bg);color:var(--success);}
+.status-badge.failed{background:var(--error-bg);color:var(--error);}
+
+@media print{.header,.header-right,.btn,.no-print,.q-actions,.q-notes{display:none!important;}.card,.q-card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;}body{background:#fff;}.q-rubric{display:block!important;}}
+@media(max-width:640px){.form-row{grid-template-columns:1fr;}.case-grid{grid-template-columns:1fr;}.header h1{font-size:0.9rem;}.container{padding:16px 10px;}.landing-hero h1{font-size:1.3rem;}}
+.hidden{display:none!important;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.fade-in{animation:fadeIn 0.3s ease;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">
+    <div class="tg-mark">TG</div>
+    <div><h1>Base Release Check</h1><div class="subtitle">A350-900 Instructor Assessment Toolkit</div></div>
+  </div>
+  <div class="header-right">
+    <button class="header-btn active" onclick="nav('landing')" id="nav-landing">Home</button>
+    <button class="header-btn" onclick="nav('dashboard')" id="nav-dash">Dashboard</button>
+    <button class="header-btn" onclick="nav('history')" id="nav-hist">History</button>
+  </div>
+</div>
+
+<div class="container" id="app">
+
+<div id="screen-landing" class="fade-in">
+  <div class="landing-hero">
+    <h1>Cabin Crew Base Release Check</h1>
+    <div class="form-id">PBA-FM 226 &middot; Issue 1 / 01 AUG 2021 &middot; A350-900</div>
+  </div>
+  <div class="landing-narrative">
+    <p>Welcome to your Base Release assessment. This is an important milestone ‚Äî it marks the moment you transition from training into the operational world as a qualified Thai Airways cabin crew member on the A350-900.</p>
+    <p>This assessment is not designed to catch you out. It is designed to <strong>confirm that you are ready</strong>. Every question follows the natural flow of a real flight ‚Äî from the moment you check in for duty through to blocks-on at your destination. You have studied the manuals, practised the drills, and spent time in the cabin. Now we walk through it together, one phase at a time.</p>
+    <p>You will be assessed across <strong>seven competency areas</strong> mapped to the official six-topic form. The standard is clear: demonstrate that you can apply your knowledge to real operational situations. If a topic is unsatisfied, that is not a failure of character ‚Äî it is simply an area to revisit. You have up to three attempts.</p>
+    <p>Take a breath. Trust your preparation. Let's begin.</p>
+  </div>
+  <div class="criteria-card">
+    <div class="criteria-header">Assessment Topics &amp; Criteria</div>
+    <table class="criteria-table">
+      <tr><td class="tn">1.</td><td>Standard Operating Procedures</td><td class="tq">10 Qs</td></tr>
+      <tr><td class="tn">2.</td><td>Emergency Exit</td><td class="tq">10 Qs</td></tr>
+      <tr><td class="tn">3.</td><td>Oxygen System</td><td class="tq">10 Qs</td></tr>
+      <tr><td class="tn">4.</td><td>Emergency Equipment</td><td class="tq">10 Qs</td></tr>
+      <tr><td class="tn">5.</td><td>Emergency Procedures</td><td class="tq">10 Qs</td></tr>
+      <tr><td class="tn">6a.</td><td>Dangerous Goods Regulations</td><td class="tq">10 Qs</td></tr>
+      <tr><td class="tn">6b.</td><td>Security</td><td class="tq">5 Qs</td></tr>
+    </table>
+    <div class="criteria-notes">
+      <ol>
+        <li>Questions are drawn from the EM Appraisal Checklist for the A350-900.</li>
+        <li>Each topic is marked <strong>Satisfied</strong> or <strong>Unsatisfied</strong>.</li>
+        <li>If <span class="hl">more than 1 out of 6 topics</span> are Unsatisfied, the trainee is considered <span class="hl">Failed</span> for Base Release.</li>
+        <li>A trainee may attempt up to <strong>3 checks</strong>.</li>
+        <li>Total: <strong>65 questions</strong> across a complete flight scenario.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="landing-cta">
+    <button class="btn btn-primary" onclick="nav(ST.instructor?'dashboard':'setup')" id="btn-start">Instructor Sign In</button>
+  </div>
+</div>
+
+<div id="screen-setup" class="hidden fade-in">
+  <div class="card" style="max-width:480px;margin:40px auto;">
+    <h2>Instructor Profile</h2>
+    <p style="color:var(--text-light);margin-bottom:16px;font-size:0.9rem;">Set up your profile to begin conducting assessments.</p>
+    <div class="form-group"><label>Instructor Name</label><input type="text" id="instrName" placeholder="Enter your full name"></div>
+    <div class="form-group"><label>Personnel Number</label><input type="text" id="instrPers" placeholder="e.g. TG12345"></div>
+    <button class="btn btn-primary btn-block" onclick="saveInstr()">Continue to Dashboard</button>
+  </div>
+</div>
+
+<div id="screen-dashboard" class="hidden fade-in">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h2 style="margin:0;">Assessments</h2>
+      <span id="instrDisp" style="font-size:0.8rem;color:var(--text-light);"></span>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="nav('new')" style="margin-bottom:14px;">+ New Assessment</button>
+    <div id="activeList"></div>
+  </div>
+  <div class="card">
+    <h2>Scenario Library</h2>
+    <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:14px;">10 unique flight scenarios ‚Äî each covers all 65 questions across a full flight timeline.</p>
+    <div class="case-grid" id="caseLib"></div>
+  </div>
+</div>
+
+<div id="screen-new" class="hidden fade-in">
+  <div class="card" style="max-width:520px;margin:24px auto;">
+    <h2>New Assessment</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Trainee Name</label><input type="text" id="tName" placeholder="Full name"></div>
+      <div class="form-group"><label>Personnel No.</label><input type="text" id="tPers" placeholder="TG_____"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>A/C Configuration</label><select id="tConfig"><option value="359">A350-900 (359)</option><option value="35B">A350-900 (35B)</option><option value="35C">A350-900 (35C)</option><option value="35D">A350-900 (35D)</option></select></div>
+      <div class="form-group"><label>Scenario</label><select id="tScen"></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Check Attempt</label><select id="tAttempt"><option value="1">First Check</option><option value="2">Second Check</option><option value="3">Third Check</option></select></div>
+      <div class="form-group"><label>Date</label><input type="date" id="tDate"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn btn-outline" onclick="nav('dashboard')">Cancel</button>
+      <button class="btn btn-primary" onclick="startAssess()" style="flex:1;">Begin Assessment</button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-assess" class="hidden fade-in">
+  <div class="card">
+    <div class="assess-header">
+      <div><strong id="aName"></strong><span class="assess-meta" id="aMeta"></span></div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-sm" onclick="toggleAll()">Toggle Rubrics</button>
+        <button class="btn btn-accent btn-sm" onclick="finish()">Finish &amp; Score</button>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="aProg" style="width:0%;"></div></div>
+    <div id="aQs"></div>
+  </div>
+</div>
+
+<div id="screen-results" class="hidden fade-in"><div class="card" id="resC"></div></div>
+<div id="screen-history" class="hidden fade-in"><div class="card"><h2>Assessment History</h2><div id="histC"></div></div></div>
+
+</div>
+
+<script>
+// === SCENARIOS ===
+const SC=[
+{id:1,t:"BKK-NRT Morning Departure",r:"TG640 BKK-NRT",em:"Cabin fire during cruise",sop:"UM (age 8) on passenger list, assigned exit row 39A. Passenger with baby bassinet request row 12. Fueling in progress during boarding.",ep:"Smoke detected from overhead bin row 45 during meal service. Escalates to visible flames from a lithium battery thermal runaway.",dgr:"Passenger at boarding presents 3 power banks (20,000mAh each). During emergency, laptop in overhead bin is the fire source.",sec:"Aircraft arrived from maintenance ‚Äî security SEARCH required. Flight is an EU-bound codeshare."},
+{id:2,t:"BKK-LHR Night Long-Haul",r:"TG910 BKK-LHR",em:"Rapid decompression at FL380",sop:"WCHC passenger without escort. Infant with CRS at window seat. MEL item: lavatory L53 inoperative.",ep:"Loud bang heard, oxygen masks deploy automatically. Cabin altitude rising. Emergency descent initiated by flight crew.",dgr:"Pre-departure NOTOC shows lithium batteries as cargo (drill code 12FZ). Post-decompression: passenger's portable O2 concentrator needs attention.",sec:"Deportee (DEPA) with 2 escorts seated in rear economy. Flight deck door code must be established before departure."},
+{id:3,t:"BKK-SIN Short-Haul Turnaround",r:"TG401 BKK-SIN",em:"Prepared ditching after dual engine failure",sop:"Group of 6 PWD passengers (3 WCHR, 3 BLND cat.1). Transit flight ‚Äî 40 pax continuing from CNX.",ep:"Both engines flame out over Gulf of Thailand. PIC calls for prepared ditching. Full TESTS briefing and ABP assignment required.",dgr:"Passenger at gate found with e-cigarettes in checked bag. Dry ice (1.5kg) for medical specimen in carry-on.",sec:"Transit from CNX ‚Äî passenger reconciliation required. Unidentified bag found in overhead bin row 55."},
+{id:4,t:"BKK-ICN Afternoon Service",r:"TG654 BKK-ICN",em:"Severe turbulence with injuries",sop:"2 UMs (ages 6 and 10) traveling together. Passenger requests seat change to exit row. Safety demo video malfunction.",ep:"Severe clear-air turbulence at FL370. Multiple passengers and 1 cabin crew injured. Galley carts unsecured. Unconscious passenger.",dgr:"During boarding: passenger with wheelchair (lithium-ion battery, 200Wh). Unknown liquid spill found in overhead bin after turbulence.",sec:"Pre-flight security CHECK procedure. Life vest pouch random inspection at 25%. Access Control Form management."},
+{id:5,t:"BKK-HND Red-Eye",r:"TG682 BKK-HND",em:"Lavatory fire and PED thermal runaway",sop:"MEDA passenger with stretcher in rear economy. Passenger using knee defender. Power bank found charging at seat 35C.",ep:"Smoke alarm in aft lavatory. E-cigarette found smouldering in waste bin. Phone overheats at seat 52A ‚Äî thermal runaway.",dgr:"E-cigarette in lavatory waste bin ‚Äî forbidden act. Phone thermal runaway ‚Äî ICAO 3.3.1 procedure. DG reporting required (1693-O).",sec:"Smoke detector tampering suspected. Post-flight security check after disembarkation."},
+{id:6,t:"BKK-CDG Ultra Long-Haul",r:"TG930 BKK-CDG",em:"Flight crew incapacitation",sop:"In-flight crew rest rotation. Passenger drops phone into adjustable seat mechanism. Rejected takeoff scenario before main emergency.",ep:"PIC reports co-pilot incapacitated. Later PIC also shows signs. CIC must assess and potentially take command.",dgr:"Smart baggage with non-removable lithium battery (>2.7Wh) at check-in. Mercury clinical thermometer in carry-on.",sec:"Sterile flight deck ‚Äî when can you interrupt? Flight deck door emergency access procedure."},
+{id:7,t:"BKK-SYD Overnight",r:"TG471 BKK-SYD",em:"Cargo smoke indication",sop:"Passenger with emotional support dog (BKK-LAX, 14CFR). BedBox ride-on suitcase at boarding. Infant loop belt policy for 35B/35D.",ep:"Cargo smoke warning. Smoke enters cabin through floor vents. PIC initiates emergency descent and diversion.",dgr:"NOTOC drill code interpretation. DG Emergency Response Kit location. Hidden DG ‚Äî passenger with camping equipment.",sec:"Aircraft unattended 14 hours ‚Äî full security SEARCH. Suspicious item protocol."},
+{id:8,t:"BKK-FRA Daytime",r:"TG920 BKK-FRA",em:"Unprepared evacuation after gear failure",sop:"3 infants ‚Äî supplementary O2 mask allocation. Inoperative door 3R. Passenger count discrepancy at transit.",ep:"Landing gear fails to extend. Emergency landing on foam. Unprepared evacuation. Door 3R inop ‚Äî redirect. CIC takes command.",dgr:"Mobility aid lithium-ion 280Wh ‚Äî approval chain. Post-evacuation: ELT activation and type per config.",sec:"EU-inbound ‚Äî life vest inspection 5-10%. AVSEC Form 06 required."},
+{id:9,t:"BKK-KIX Morning",r:"TG622 BKK-KIX",em:"Medical emergency and go-around",sop:"Young Passenger (YP, age 14). Extended ground delay >2 hours. Cabin temperature complaints.",ep:"Passenger collapses ‚Äî cardiac arrest. AED deployment. Go-around due to wind shear. Second approach.",dgr:"Passenger with sporting ammunition (5kg Div 1.4S). TG-01 variation: no DG in excepted quantities.",sec:"Post-flight security check reporting. IFSO awareness ‚Äî treated as normal passenger."},
+{id:10,t:"BKK-PVG Afternoon",r:"TG662 BKK-PVG",em:"Bomb threat and rapid disembarkation",sop:"Aircraft deicing. Fueling with passengers. Late crew change ‚Äî CIC handover.",ep:"Anonymous bomb threat via radio. PIC decides rapid disembarkation (not evacuation). Orderly exit via doors.",dgr:"Hidden DG in baggage ‚Äî aerosol cans. Catering dry ice ‚Äî operator property (not DGR). Hazard label: red diamond flame = Class 3.",sec:"Bomb threat procedure ‚Äî do NOT touch. Ground security coordination. Post-incident aircraft search."}
+];
+
+// === BUILD QUESTIONS ===
+function buildQs(s,cfg){
+const Q=[];let n=0;
+const add=(ph,top,tc,pr,ru,dp,rf)=>{n++;Q.push({id:n,phase:ph,topic:top,tc:tc,prompt:pr,rubric:ru,dp:dp,rf:rf,score:null,notes:''});};
+
+const ext=cfg==='359'?'Halon (Air Total) ‚Äî ~9 sec discharge':'Halotron BRX (P3/Umlaut) ‚Äî ~9-10 sec';
+const vest=cfg==='359'?'Dual-chamber life vest (2 CO2 cylinders)':'Single-chamber life vest (1 CO2 toggle)';
+const elt={359:'ELTA ADT 406S','35B':'ELTA eLite','35C':'Honeywell RESCU 406SE','35D':'ELTA ADT 406S'}[cfg]||'ELTA ADT 406S';
+
+// ‚îÄ‚îÄ SOP (10) ‚îÄ‚îÄ
+add('Pre-Duty','SOP','sop',`<span class="sc">You are checking in for duty on ${s.r}.</span><span class="ask">What is IMSAFE? When must you declare yourself unfit?</span>`,['I=Illness, M=Medication, S=Stress, A=Alcohol (8hr bottle-to-throttle, 0.02% BAC), F=Fatigue, E=Eating','Declare unfit to Crew Scheduling if any factor compromised before reporting'],'What if you feel slightly unwell but think you can manage?','Cannot name all 6 letters; thinks IMSAFE is optional');
+
+add('Pre-Duty','SOP','sop',`<span class="sc">CIC begins pre-flight briefing.</span><span class="ask">What are the mandatory items CIC must brief?</span>`,['Safety info ‚Äî bulletins, MEL, equipment status','Security info ‚Äî threat level, CHECK or SEARCH requirement','Emergency procedure reminders ‚Äî positions, equipment','Flight-specific ‚Äî route, destination regulations, weather','Crew position assignment (even spread through aircraft)','In-flight rest plan ‚Äî groups, CIC/Next CIC always on duty','Access to current info via iRF'],'How is crew position assignment determined?','Thinks briefing is service-only; omits security');
+
+add('Pre-Duty','SOP','sop',`<span class="sc">PIC arrives to brief the cabin crew.</span><span class="ask">What does PIC brief you on? Explain the TESTS framework.</span>`,['PIC briefs: taxi/flight time, weather, flight deck door procedures, security, DG drill code','TESTS: T=Type of emergency, E=Evacuation (land/water, prepared/unprepared), S=Signal (PA "BRACE BRACE" + seatbelt sign), T=Time before impact, S=Special instructions','PIC establishes Identification Code and Emergency Code for flight deck door'],'When is TESTS used? Can CIC relay it?','Cannot expand TESTS; does not know PIC establishes door codes');
+
+add('Boarding','SOP','sop',`<span class="sc">${s.sop}</span><span class="ask">Identify the special passenger issues and explain the correct seating/handling rules.</span>`,
+s.id===1?['UM age 8: NOT at exit row 39A ‚Äî move immediately','UM seating: window when full; aisle+2 blocked when not full','Special briefing: exits, call button, Safety Card, remain seated','Baby bassinet: max 10kg, 67cm, 6 months ‚Äî installed after seatbelt sign off only','Fueling: crew responsible for evacuation if fire/smoke; ground servicing must not block routes']:
+s.id===2?['WCHC no escort: max 2/flight wide-body; aisle seat center row near service exit (not overwing)','Infant CRS: window or inner center seat; NOT exit/bulkhead; width max 16"','MEL L53 inop: placard "INOPERATIVE"; CIC‚ÜíPIC; PIC decides']:
+s.id===3?['PWD group with escorts: rearmost zones, max 3 PWD/escort','WCHR: walks in cabin, not stairs. BLND cat.1: unaccompanied OK; provide Blind booklet','None at exit rows. Transit: post-flight check + reconciliation']:
+s.id===4?['Both UMs NOT at exit rows; age 6 counts toward 5-7 limit (max 6)','Exit seat change: verify 15+, able-bodied, willing, understands','Video malfunction: CIC‚ÜíPIC; live demo mandatory']:
+s.id===5?['MEDA stretcher: 1/flight, wide-body, left side rearmost Y','Knee defender: prohibited comfort device ‚Äî remove','Power bank at seat: charging prohibited; ask to stow off']:
+s.id===6?['Crew rest: CIC assigns groups; CIC/Next CIC always on duty','Phone in seat: ICAO 3.3.4 ‚Äî do NOT move seat electrically/mechanically','Rejected takeoff: remain at station, wait for PIC order']:
+s.id===7?['Emotional support dog: BKK-LAX only (14CFR 382); window bulkhead or non-obstructing','BedBox: window/middle center on wide-body; NOT exit/bulkhead','Infant loop belt 35B/35D: upon passenger request ONLY']:
+s.id===8?['3 infants: each where supplementary O2 mask available','Door 3R inop: placarded, NOT for boarding, pax informed before takeoff/landing','Count discrepancy: headcount 2x all classes; PA stay seated; lavs checked']:
+s.id===9?['YP age 14: escort service; no number restriction; NOT at exit','Delay >2hr: provide snacks/meals (CIC+PIC+functions)','Delay >3hr: allow disembark (except safety/security/ATM)']:
+['Deicing: Clean Aircraft Concept ‚Äî no ice before takeoff; CC observe wings‚ÜíCIC','Fueling pax: JET A/A1 OK under conditions; stop if vapor detected','Crew change: CIC handover ‚Äî all docs, NOTOC, security, MEL'],
+'What if you are unsure about exit seat eligibility?','Seats restricted pax at exit; does not know UM ages; omits MEL report');
+
+add('Boarding','SOP','sop',`<span class="sc">Passengers at exit rows need briefing.</span><span class="ask">What are exit seat requirements and the special briefing content?</span>`,['15+ years old, fully able-bodied, willing/able to assist, understand instructions, good health','NOT permitted: PWD, infants, UMs, YPs, escort dogs, INAD, DEPA','Briefing: (1) seated near exit, (2) keep area clear, (3) follow crew in emergency, (4) may be asked to open door ‚Äî show Safety Card'],'What if passenger refuses briefing or says they cannot help?','Does not know 15+ age; forgets "willing and able"; allows restricted categories');
+
+add('Door Arming','SOP','sop',`<span class="sc">Boarding complete. CIC initiates door arming.</span><span class="ask">Walk me through door arming and the "Cabin Clear" report.</span>`,['CIC ensures galley/pax/crew ready; all doors closed and locked','Arming ordered when steps/aerobridge removed and clear','Cabin Clear to PIC confirms: security check done, galleys ready, crew meals loaded, passport/visa checked, seating per load sheet, headcount done, all doors closed and armed, documents per SSQR checked, number of passengers'],'What if a door must reopen after arming?','Cannot list Cabin Clear contents; forgets headcount; omits SSQR');
+
+add('Departure','SOP','sop',`<span class="sc">Aircraft pushes back. Safety demo begins.</span><span class="ask">What must the safety briefing cover? What if the video fails?</span>`,['Seatbelt, O2 mask (own first), life vest, exits, emergency lighting, carry-on, brace position, Safety Card, no smoking','Video fails: CIC‚ÜíPIC; live demo MANDATORY using Safety Card','Also covers: PED use, window shade open'],'Who is responsible if a pax did not watch?','Omits O2 or life vest; does not know live demo is mandatory');
+
+add('Taxi','SOP','sop',`<span class="sc">CIC orders: "Cabin crew safety check and at your station."</span><span class="ask">What is the cabin preparation checklist and reporting sequence?</span>`,['Exits/aisles clear, curtains open/latched, overhead bins closed, PEDs off/stowed, window shades OPEN, seatbelts fastened, seats upright, tables/footrests stowed, infants secured','Report: AFT RH ‚Üí FWD LH, "XX ready", CIC confirms "All stations cabin ready", CIC‚ÜíPIC','Night: adjust cabin light to match outside'],'What if a pax refuses to comply?','Wrong reporting direction; forgets window shades; omits curtains');
+
+add('Cruise','SOP','sop',`<span class="sc">Cruise altitude. Seatbelt sign off.</span><span class="ask">What are your cabin monitoring duties? How often do you check lavatories?</span>`,['Lavatory every 20-30 min: smoke detector unblocked, waste bin flap closed, no fire hazards','PED/power bank: NO use or charging during entire flight (crew too)','Do NOT reset tripped circuit breakers','Report all abnormal events to CIC','Secure carts/stowage after each service'],'What if you find a tripped circuit breaker?','Does not know 20-30 min; thinks power banks OK in cruise; resets breaker');
+
+add('Arrival','SOP','sop',`<span class="sc">After landing.</span><span class="ask">Walk me through door disarming and post-flight security check.</span>`,['Seatbelt sign off ‚Üí CIC orders Door Disarming','Each doorman disarms and confirms','Post-flight check: overhead bins, seat pockets, lavs, galleys ‚Äî section by section','Report: AFT first, right then left','Suspicious items: do not touch, note position, CIC‚ÜíPIC','CIC reports to PIC, PIC acknowledges'],'Transit vs final destination ‚Äî what differs?','Does not know disarming sequence; skips lavatory check');
+
+// ‚îÄ‚îÄ EXIT (10) ‚îÄ‚îÄ
+add('Equipment Check','Exit','exit',`<span class="sc">You proceed to your assigned door.</span><span class="ask">How many exits on the A350-900? Describe the door numbering and what type of slides.</span>`,['8 exits: 1L, 1R, 2L, 2R, 3L, 3R, 4L, 4R','All floor-level doors ‚Äî no overwing hatches on A350','Each door has slide/raft (SR) ‚Äî converts for land and water','Slides auto-deploy when door opened in ARMED mode','Megaphones at 1L and 4L'],'What is the difference between armed and disarmed?','Thinks A350 has overwing exits; wrong number of exits');
+
+add('Equipment Check','Exit','exit',`<span class="ask">What do you check at your door during the emergency equipment check?</span>`,['Door condition ‚Äî armed/disarmed indicator, window clear','Emergency equipment at station: extinguisher, PBE, flashlight, megaphone (1L/4L)','Interphone test from station','Cabin crew seat ‚Äî harness, folding mechanism','Safety Instruction Card at every seat (correct type/revision)','Life vest pull strap visible (spot check)','Report: "Station XX, emergency equipment check completed"'],'What if an item is unserviceable?','No systematic order; forgets Safety Card; wrong reporting phrase');
+
+add('Boarding','Exit','exit',`<span class="ask">How do you brief the overwing exit passengers? What about self-help exits?</span>`,['Overwing exits are self-help: passengers assess hazards and open','Same criteria: 15+, able-bodied, no restrictions','At least one pax each side during taxi/takeoff/landing','Briefing: (1) seated near exit, (2) keep clear, (3) only in emergency may open, (4) study briefing card','Point to overwing exit operation in Safety Instruction Card'],'What if no qualified passenger is available for one side?','Does not distinguish overwing from main door; skips Safety Card reference');
+
+add('Takeoff','Exit','exit',`<span class="sc">Brace position for takeoff. Silent review.</span><span class="ask">What is the 30-second silent review? What do you mentally rehearse?</span>`,['Performed: just prior to takeoff AND gear down to landing','In crew seat, brace, harness fastened','Rehearse: nearest exit operation, commands to shout, outside conditions check, equipment locations, brace commands ("HEAD DOWN HEAD DOWN"), alternative exit if blocked'],'What is the brace signal from PIC?','Thinks it is just sitting quietly; cannot describe what to rehearse');
+
+add('Emergency','Exit','exit',`<span class="sc">PIC calls urgency. Emergency landing ahead.</span><span class="ask">Describe the TESTS briefing relay and ABP categories A, B, C.</span>`,['PIC briefs CIC with TESTS via interphone','CIC relays to all stations via interphone','CIC reports "CABIN CREW EMERGENCY BRIEFING COMPLETED"','ABP: A = assist at exit (operate door if needed), B = assist outside (slide base, gather pax), C = assist special passengers (PWD, infants, elderly)'],'What if there is no time for TESTS?','Cannot define A/B/C; does not know CIC relays');
+
+add('Emergency','Exit','exit',`<span class="sc">"CABIN CREW AT YOUR STATION" then "EVACUATE, EVACUATE."</span><span class="ask">Walk me through evacuation from your door.</span>`,['Assess outside through window ‚Äî fire, water, obstacles','If SAFE: open door ‚Üí slide auto-deploys ‚Üí verify inflated','Commands: "UNDO SEATBELTS ‚Äî GET OUT ‚Äî LEAVE EVERYTHING ‚Äî COME THIS WAY"','If NOT SAFE: block exit ‚Üí "GO BACK ‚Äî GO THE OTHER WAY" ‚Üí redirect','Assist flow one-at-a-time; remove heels before slide','Assist special pax ‚Äî hand children to ABP at slide base'],'What if slide does not inflate?','Opens without checking outside; does not verify slide; forgets "leave everything"');
+
+add('Emergency','Exit','exit',`<span class="ask">What are the evacuation zones on the A350 for your configuration (${cfg})?</span>`,
+[cfg==='35C'?'1L/1R: FWD to Row 14':'1L/1R: FWD to Row 15',cfg==='35C'?'2L/2R: Row 14-39':'2L/2R: Row 15-39','3L/3R: Row 39-56','4L/4R: Row 56-AFT','If exit blocked: CA redirects pax ‚Äî "GO BACK"','Adjacent CA manages increased flow','Communication via shouting/hand signals'],'What if both exits on one side are blocked?','Does not know zone boundaries; does not redirect');
+
+add('Emergency','Exit','exit',`<span class="ask">Difference between "CABIN CREW AT YOUR STATION" and "EVACUATE"? What happens between them?</span>`,['AT YOUR STATION: go to exit, DO NOT open yet','Crowd control: "KEEP CALM, REMAIN SEATED, WAIT"','PIC assesses which side safe, may clear one/block other','EVACUATE: open doors, begin evacuation commands','If no command from PIC: CIC goes to flight deck to assess'],'What if you hear AT YOUR STATION but never EVACUATE?','Opens door on AT YOUR STATION; skips crowd control');
+
+add('Emergency','Exit','exit',`<span class="ask">PIC is incapacitated. Walk me through CIC taking command.</span>`,['CIC proceeds to flight deck, checks pilots','If busy: wait and ask for decision','If seriously injured/unable: CIC takes command','Push evacuation signal button + PA "EVACUATE, EVACUATE"','CIC responsible for checking ENTIRE cabin before leaving','CIC leaves LAST'],'Who takes over if CIC is also incapacitated?','Does not know CIC can take command; leaves before checking cabin');
+
+add('Emergency','Exit','exit',`<span class="ask">How does a water evacuation (ditching) differ from land?</span>`,['Life vests: don BEFORE impact, inflate ONLY after leaving aircraft','Slides convert to rafts on A350','Raft auto-inflates when door opened in armed mode','Disconnect raft from aircraft (cut mooring line) when moving away','ELT: may auto-activate in water; manual if not','Survival equipment in raft: sea anchor, locator light, mooring line','Account for all pax in rafts'],'How many pax per raft? What survival equipment inside?','Says inflate vest inside cabin; forgets to disconnect raft');
+
+// ‚îÄ‚îÄ O2 (10) ‚îÄ‚îÄ
+add('Equipment Check','O2 System','o2',`<span class="ask">What type of portable oxygen is on the A350? Minimum pressure? How to operate?</span>`,['Carbon Fiber AVOX','310L (all configs); 359 also has 120L','Min preflight: 1,500 PSI; after use: not below 150 PSI','Operate: remove ‚Üí mask from bag ‚Üí ensure attached ‚Üí turn knob CCW to 2 or 4 LPM (centered in window) ‚Üí check flow indicator ‚Üí place on user','CAUTION: do NOT turn past stop at 4 LPM'],'What are durations at each flow rate?','Says min 1000 PSI; does not know Carbon Fiber type');
+
+add('Equipment Check','O2 System','o2',`<span class="ask">Tell me about the Zero Two Medical Oxygen. Where stowed, capacity, setup?</span>`,['4.7L supplementary O2 for medical use','Stowed in designated coatroom per SSQR','Preflight: gauge at FULL, 2 masks in case','Duration: 2 LPM=~8.9hr, 4 LPM=~4.5hr, 8 LPM=~2.2hr','Setup: unzip ‚Üí check gauge ‚Üí open valve 1/4 CCW ‚Üí connect mask ‚Üí set flow ‚Üí fit mask ‚Üí secure behind ankles with extension belts','During decompression: REPLACE Zero Two mask with drop-down ceiling mask'],'What if gauge less than FULL?','Does not know it exists; confuses with portable bottle');
+
+add('Cruise','O2 System','o2',`<span class="sc">Passenger feels short of breath and dizzy.</span><span class="ask">How do you administer supplemental oxygen?</span>`,['Assess condition; if serious: CIC‚ÜíPIC','Retrieve portable O2 (Carbon Fiber AVOX)','Select 2 LPM (mild) or 4 LPM (serious)','Ensure number centered in window; check flow indicator','Place mask on passenger','Monitor patient and gauge periodically','Safety: no flame, no grease/cosmetics near O2'],'When switch to Zero Two instead?','Does not check flow indicator; ignores safety precautions');
+
+add('Cruise','O2 System','o2',`<span class="sc">Flight still 4 hours out. Portable bottle running low.</span><span class="ask">Options for long-duration O2 supply?</span>`,['310L at 4 LPM = ~60 min; at 2 LPM = ~120 min','Transition to Zero Two: at 2 LPM = ~8.9 hours ‚Äî sufficient','Do not deplete all portable bottles ‚Äî 1 per 50 pax is regulation minimum','Consult PIC about diversion if worsening'],'What is min acceptable on Zero Two gauge?','Does not know Zero Two; depletes all bottles for one pax');
+
+add('Emergency','O2 System','o2',`<span class="sc">Loud bang. Masks deploy.</span><span class="ask">What triggered the fixed system? How long does it last? Mask components?</span>`,['Auto-activates on decompression (cabin altitude trigger); also manual from flight deck','Duration depends on pax count and cabin altitude','Mask components: elastic band, face mask (inhale/exhale valves), reservoir bag, flow indicator','Supplementary mask: 1 extra at outboard double/triple, 1 at quadruple ‚Äî limits infant seating','IMPORTANT: pax masks are THERAPEUTIC ‚Äî NOT gas-tight ‚Äî fumes enter through valves'],'Why not rely on drop-down masks in smoke?','Thinks masks are gas-tight; does not know supplementary locations');
+
+add('Emergency','O2 System','o2',`<span class="ask">After decompression ‚Äî why crew walk-around with portable O2?</span>`,['After aircraft levels at safe altitude: crew check all pax with portable O2','Some pax may not have donned masks properly','Check for injuries; assist confused/unconscious pax','Infants: parent must have own mask first; infant may need assistance','Portable O2 for crew mobility ‚Äî ceiling masks have limited reach'],'Time of useful consciousness at FL380?','Does not know walk-around is required; skips checking pax masks');
+
+add('Emergency','O2 System','o2',`<span class="ask">Flow rates: 2 LPM vs 4 LPM ‚Äî when each? Durations for 310L?</span>`,['2 LPM: mild symptoms, supplemental, longer duration','4 LPM: serious symptoms, higher O2 demand','310L at 2 LPM: ~120 min; at 4 LPM: ~60 min','120L (359 only) at 2 LPM: ~40 min; at 4 LPM: ~20 min','Do not force knob past 4 ‚Äî damages unit, must be serviced'],'What if you need higher than 4 LPM?','Confuses flow rates; cannot calculate duration');
+
+add('Emergency','O2 System','o2',`<span class="ask">Flight crew O2 vs cabin/passenger O2 vs PBE ‚Äî what is the difference?</span>`,['Flight crew: gas-tight quick-donning masks, 100% O2 ‚Äî full smoke protection','Cabin/pax: therapeutic masks ‚Äî NOT gas-tight, fumes enter through valves','PBE: sealed hood + 15 min O2 ‚Äî provides smoke AND fume protection','For smoke/fire: crew must use PBE, NOT portable O2 with therapeutic mask','Portable O2 with mask: suitable for medical administration only, not smoke'],'When choose PBE vs portable O2?','Uses therapeutic mask in smoke; thinks PBE is only for fire');
+
+add('Emergency','O2 System','o2',`<span class="ask">Safety precautions when using oxygen?</span>`,['No open flame or smoking near O2','No oil, grease, cosmetics ‚Äî fire/explosion risk','Monitor supply regularly','After use: not below 150 PSI','Grasp bottle firmly when transporting','Do not force AVOX knob past "4"','O2-enriched atmosphere = increased fire risk','Replace Zero Two mask with drop-down during decompression'],'What happens if O2 contacts grease?','Does not know grease danger; does not monitor supply');
+
+add('Emergency','O2 System','o2',`<span class="ask">Minimum portable O2 bottles per regulation? How do you manage supply across a long flight?</span>`,['1 portable O2 bottle per 50 passengers (regulation)','3 purposes: crew walk-around after decompression, pax after decompression, first aid','Must not deplete all bottles for one medical case','Zero Two is the long-duration solution for individual medical cases','Communicate with CIC about bottle status across zones'],'What if multiple medical cases occur simultaneously?','Does not know 1-per-50 rule; depletes all bottles');
+
+// ‚îÄ‚îÄ EQUIPMENT (10) ‚îÄ‚îÄ
+add('Equipment Check','Equipment','eq',`<span class="ask">Fire extinguisher type on ${cfg}? Preflight check and operating steps?</span>`,[`Type: ${ext}`,'Preflight: sealed, gauge green, bracket latched',cfg==='359'?'Operate: remove ‚Üí upright ‚Üí release safeguard (black) + seal wire ‚Üí 1-2m ‚Üí aim at BASE ‚Üí depress red trigger, sweep ‚Üí release to stop':'Operate: pull latch hooks ‚Üí remove ‚Üí upright ‚Üí remove safety pin ‚Üí aim at base (1.5-2m) ‚Üí push lever, sweep ‚Üí release',cfg!=='359'?'After Halotron: VENTILATE the area':'','Duration: ~9-10 seconds'],'Can you use water on electrical fire? Lithium battery?','Wrong type for config; does not aim at base; does not know duration');
+
+add('Equipment Check','Equipment','eq',`<span class="ask">PBE on A350 ‚Äî type, duration, preflight check, donning procedure?</span>`,['Air Liquide ‚Äî all A350 variants','Duration: 15 minutes','Preflight: in place, GREEN ready indicator','Don: open container ‚Üí remove vacuum bag ‚Üí pull red tear tab ‚Üí orange marks facing forward ‚Üí open black neck seal ‚Üí flick hood sharply to deploy ‚Üí put over head (back to front) ‚Üí hear click + O2 noise ‚Üí adjust mask, hair inside'],'What if no O2 flow noise? Temperature inside?','Does not know Air Liquide; says 30 min; skips green check; no "flick sharply"');
+
+add('Equipment Check','Equipment','eq',`<span class="ask">Life vest on ${cfg} ‚Äî type, duration, operation?</span>`,[`Type: ${vest}`,'Duration: 8 hours; serviceable 10 years from MFR date',cfg==='359'?'Operate (dual): over head ‚Üí snap hooks to D ring ‚Üí tighten ‚Üí inflate just before leaving aircraft ‚Üí pull tabs; if fail, blow manually ‚Üí pull battery tag for lamp':'Operate (single): over head ‚Üí connect buckles ‚Üí tighten ‚Üí pull red T handle before leaving ‚Üí blow if fail ‚Üí lamp auto in water','CRITICAL: inflate ONLY just before leaving aircraft'],'Infant vest procedure on your config?','Inflate inside aircraft; does not know dual vs single');
+
+add('Equipment Check','Equipment','eq',`<span class="ask">Flashlight model on A350? LED meanings? ELT type on ${cfg}?</span>`,['Flashlight: F81XS all A350; green LED=OK, red every 10sec=battery end; 4 hours; lithium-ion',`ELT: ${elt}`,'ELT frequencies: 121.5/243/406 MHz','406 MHz: 24 hours then off; 121.5/243: >48 hours'],'When does ELT activate ‚Äî auto or manual?','Does not know LED colors; wrong ELT type');
+
+add('Equipment Check','Equipment','eq',`<span class="ask">AED ‚Äî types onboard, preflight check, who can use Medical Kit?</span>`,['AED: Heartstart FR2 (displays cardiac wave) and FRx (no wave display)','Preflight: FR2=status flashes 1-sec interval; FRx=ready light blinks green','AED Supplementary Kit: pocket masks, shavers, gauze, towels, scissors, gloves','Medical Kit: medicine used by MEDICAL DOCTOR ONLY; 2 kits loaded','FAK: cabin crew/CIC may open; PIC must be informed','After use: seal kit; CIC informs seal/equip number + location to PIC for Tech Log'],'Can crew use Medical Kit drugs if no doctor onboard?','Thinks crew can administer Medical Kit drugs; does not know 2 AED types');
+
+add('Emergency','Equipment','eq',`<span class="ask">Step-by-step: operating the ${cfg==='359'?'Halon':'Halotron BRX'} extinguisher in a fire.</span>`,cfg==='359'?['Remove from bracket','Hold upright','Release safeguard (black) + seal wire','Stand 1-2m','Aim at BASE of fire','Depress red trigger ‚Äî sweep side to side','Release to stop','~9 sec duration','Don PBE FIRST before approaching']:['Pull first latch hook, open strap','Secure with one hand','Open second latch hook, remove','Hold upright','Remove safety pin (straight pull)','Aim at base (1.5-2m)','Push lever ‚Äî sweep side to side','Release to stop','VENTILATE after use','~9-10 sec; don PBE first'],'What fire type cannot use this on?','Does not don PBE first; wrong operating steps');
+
+add('Emergency','Equipment','eq',`<span class="ask">PBE donning ‚Äî full step-by-step. How do you communicate while wearing it?</span>`,['Open container per placard','Remove vacuum bag','Pull red tear tab ‚Äî take out hood pulling on O2 container','Orange marks visible, facing forward ‚Äî hands on orange marks','Open black neck seal','Hold O2 container tightly, FLICK hood down sharply','Put over head (back to front)','Hear click + O2 flow ‚Äî breathe normally','Adjust mask; hair INSIDE','Communication: speech diaphragm (phonic membrane) built in','If no O2 noise: REMOVE immediately, use another PBE','Temperature increases to ~40¬∞C progressively'],'What if donned backwards?','Skips "flick sharply"; does not check for O2 noise; hair outside');
+
+add('Emergency','Equipment','eq',`<span class="ask">Life vest ‚Äî when exactly to inflate? Operation steps for passenger briefing?</span>`,[cfg==='359'?'Dual: put over head ‚Üí snap hooks to D ring ‚Üí tighten straps':'Single: put over head ‚Üí connect buckles ‚Üí tighten','Inflate ONLY just before leaving aircraft ‚Äî NEVER inside cabin','If auto fails: blow through oral inflation tubes','Signaling lamp: '+( cfg==='359'?'pull battery tag':'auto in water'),'Duration: 8 hours all types','For ditching: don vest BEFORE impact during cabin preparation; inflate AFTER exiting'],'What if vest tears during inflation?','Says inflate inside cabin; confused about when to don vs inflate');
+
+add('Emergency','Equipment','eq',`<span class="ask">Megaphone locations? Escape devices in flight deck?</span>`,['Megaphones: stations 1L and 4L','Type 359/35C: Federal Signal Voice Gun ‚Äî squeeze handle','Flight deck escape: escape rope stowed next to emergency escape hatch','Descent device: 4 units next to overhead hatch','Survival kit: external survival kit with osmosis ‚Äî all A350','Kit contains: Signaling, Medical, Repair components'],'When would escape devices be used?','Does not know megaphone locations; unaware of escape rope');
+
+add('Post-Event','Equipment','eq',`<span class="ask">DG Emergency Response Kit ‚Äî where is it, what is inside, what improvised equipment can you use?</span>`,['Location: at the Spare Air Hostess Kit','Contents: large polyethylene bags, long rubber gloves, bag ties','Improvised: bar/catering boxes, oven gloves, blankets/towels for spillage, wet towels for breathing (more effective than pax O2 masks in smoke), galley polyethylene bags','Protect hands: fire-resistant gloves covered by polyethylene bags'],'Why wet towels better than pax O2 masks in smoke?','Does not know kit location; thinks it is in flight deck');
+
+// ‚îÄ‚îÄ EP (10) ‚îÄ‚îÄ
+add('Emergency','Emergency Proc','ep',`<span class="sc">${s.ep}</span><span class="ask">What are your immediate first actions?</span>`,
+s.id===1?['Identify source: overhead bin row 45','Alert: "FIRE FIRE FIRE"','Get extinguisher + PBE','Don PBE before approaching','Move pax away','Notify PIC via interphone','Firefighting team: Fighter, Communicator, Assistant']:
+s.id===2?['Grab nearest O2 ‚Äî fixed mask or portable','SIT DOWN at nearest seat','Shout: "PUT YOUR MASK ON, PULL THE TUBE, SIT DOWN"','Flight crew initiates descent','After level-off: walk-around with portable O2','Check injuries; assist unmasked pax']:
+s.id===3?['PIC calls prepared ditching ‚Üí TESTS','CIC to flight deck for briefing','CIC relays TESTS to all crew','Secure cabin, brief ABP (A/B/C)','Brief pax: brace position, life vest ‚Äî don, do NOT inflate inside','Remove sharp objects, heels']:
+s.id===4?['Hold nearest fixed object','If thrown: protect head, crawl to seat','Check injuries when able','Secure galley ‚Äî close carts, latch','Unconscious pax: airway-breathing-circulation','CIC‚ÜíPIC about status']:
+s.id===5?['Lavatory alarm: proceed with extinguisher + PBE','Open door carefully (feel for heat)','Identify: e-cigarette in waste bin ‚Üí extinguish','Phone at 52A: ICAO 3.3.1 PED fire procedure','Prioritize active fire (lav) first']:
+s.id===6?['Co-pilot incapacitated: CIC assists per PIC request','Maintain interphone communication','If PIC also incapacitated: CIC to flight deck','CIC assesses ‚Äî if both unable: CIC takes command','Initiate evacuation after landing']:
+s.id===7?['Cargo smoke: flight crew handles systems','Smoke in cabin: move pax away','Distribute WET towels (better than O2 masks)','Keep flight deck door CLOSED','Report to PIC via interphone','Prepare for possible evacuation at diversion']:
+s.id===8?['Gear failure ‚Üí emergency landing on foam','No PA from flight deck ‚Üí CIC to flight deck','CIC checks pilots; if injured: takes command','Push evac signal + PA "EVACUATE EVACUATE"','Door 3R inop: block and redirect']:
+s.id===9?['Pax collapses: call for medical professionals','CPR if trained; deploy AED','AED: follow voice prompts','CIC‚ÜíPIC; PIC decides diversion','Go-around: remain at station, wait for PIC']:
+['Bomb threat: PIC decides rapid disembarkation','NOT full evacuation ‚Äî no slides','Orderly exit via doors with stairs/aerobridge','PA: calm, clear, "leave all baggage"','Check cabin empty; CIC last'],
+'What if situation escalates?','Panics; does not don PBE; no firefighting team');
+
+add('Emergency','Emergency Proc','ep',`<span class="ask">Firefighting team: who does what?</span>`,['FIREFIGHTER: attacks fire with extinguisher; wears PBE','COMMUNICATOR: interphone with PIC; relays info; coordinates','ASSISTANT: backup extinguisher; moves pax; ready to take over','Assignment: nearest crew = firefighter; next = communicator + assistant','CIC coordinates overall; may delegate if far from fire'],'What if firefighter runs out of agent?','Does not know 3 roles; thinks only 1 person fights fire');
+
+add('Emergency','Emergency Proc','ep',`<span class="ask">Prepared evacuation sequence ‚Äî from TESTS relay to aircraft stop.</span>`,['PIC urgency call: interphone all stations + PA "CIC REPORT TO FLIGHT DECK" + 6x seatbelt sign','PIC TESTS ‚Üí CIC ‚Üí all crew via interphone','CIC: "CABIN CREW EMERGENCY BRIEFING COMPLETED"','PIC + CIC PA emergency announcement to pax','Cabin secure: galley, items, loose objects','ABP briefing: A=exit, B=outside, C=special pax','CIC: "ALL STATIONS CABIN SECURE"','PIC: "Emergency Station" ‚Üí crew to stations','Brace: PA "BRACE BRACE" + sign flash','CA: "HEAD DOWN ‚Äî HEAD DOWN"','Landing ‚Üí stop ‚Üí evacuation if required'],'Prepared vs unprepared ‚Äî what differs?','Cannot describe relay chain; does not know ABP A/B/C');
+
+add('Emergency','Emergency Proc','ep',`<span class="ask">Cabin fire step-by-step using your extinguisher type.</span>`,cfg==='359'?['Don PBE first','Remove Halon from bracket','Release safeguard + seal wire','1-2m, aim at BASE, depress red trigger','Sweep side to side','Release to stop (~9 sec)','Monitor reignition; backup from assistant']:['Don PBE first','Pull latch hooks, remove Halotron','Remove safety pin','1.5-2m, aim at BASE','Push lever, sweep side to side','Release (~9-10 sec)','VENTILATE area after','Monitor reignition'],'When use water instead?','No PBE; does not aim at base; forgets ventilate for Halotron');
+
+add('Emergency','Emergency Proc','ep',`<span class="ask">Sterile flight deck ‚Äî what is it, when, and what are the exceptions?</span>`,['Critical phases: moving under own power, takeoff, landing, below 10,000ft except cruise, seatbelt sign on','No non-essential duties, conversation, visits, interphone','Exceptions: fire/smoke/burning smell, medical emergency, unusual noise/vibration, fuel leak, door malfunction, extreme temperature, suspicious baggage, abnormal conditions','During emergency: these exceptions apply ‚Äî MUST contact flight deck','Keep flight deck door CLOSED; use interphone'],'Can pax knock on flight deck during sterile?','Thinks sterile = no communication ever; does not know exceptions');
+
+add('Emergency','Emergency Proc','ep',`<span class="ask">Rejected takeoff ‚Äî cabin crew procedure.</span>`,['Discontinued before takeoff speed; PIC decision only','Remain at station; wait for "CABIN CREW AT YOUR STATION"','If no order: CIC contacts flight crew','Assess outside; report unusual','Monitor cabin; keep pax under control','Do NOT initiate interphone between stations (non-serious)','No evacuation: "REMAIN SEATED, RESUME NORMAL DUTIES" ‚Üí disarm on request ‚Üí stairs','Evacuation: refer to emergency procedure'],'Difference from post-landing actions?','Initiates evacuation without PIC; opens doors');
+
+add('Emergency','Emergency Proc','ep',`<span class="ask">Three types of decompression and immediate actions.</span>`,['EXPLOSIVE: <1sec ‚Äî loud bang, fog, temp drop, debris','RAPID: 1-10sec ‚Äî similar, slightly slower','GRADUAL: may go unnoticed ‚Äî ear pain, fatigue, hypoxia','Actions: GRAB O2 ‚Üí SIT DOWN ‚Üí shout "PUT MASK ON, PULL TUBE, SIT DOWN"','Own mask first; flight crew descends','After level-off: walk-around with portable O2','Check injuries, assist unmasked pax, check structural damage'],'Time of useful consciousness at FL380?','Helps others before own mask; does not sit down');
+
+add('Post-Event','Emergency Proc','ep',`<span class="ask">What reporting is required after the emergency?</span>`,['ASR (Air Safety Report) to OB','DG occurrence: Form 1693-O or iQSMS within 72 hours','Tech Log: CIC‚ÜíPIC for cabin damage/defects','Cabin Log: non-safety cabin defects','PIC‚ÜíATC: DG details if in-flight emergency','After landing: inform ground/emergency services of items + locations','CAAT: 72 hours for DG; "without delay" for accidents/serious incidents','Retention: occurrence reports 24 months minimum'],'Who reports to CAAT?','Does not know ASR; confuses timelines');
+
+// ‚îÄ‚îÄ DGR (10) ‚îÄ‚îÄ
+add('Pre-Duty','DGR','dgr',`<span class="sc">PIC briefing mentions dangerous goods drill code on the NOTOC.</span><span class="ask">What is the NOTOC? What information does it contain?</span>`,['Notification to Captain ‚Äî details of DG on board','Contains: AWB number, proper shipping name, UN number, class/division, subsidiary risk, packing group, number of packages, net quantity, exact loading location, ERG drill code, unloading airport','Must be provided before aircraft moves under own power','PIC acknowledges with signature','Signed confirmation from loader: no damage/leakage','Must be readily available to PIC during flight'],'When must PIC receive NOTOC?','Does not know NOTOC exists; cannot list required info');
+
+add('Boarding','DGR','dgr',`<span class="sc">${s.dgr.split('.')[0]}.</span><span class="ask">Apply TDGM Table 9-1. What are the rules and your actions?</span>`,
+s.id===1?['Power banks = spare batteries = carry-on ONLY','Max 100Wh each (~27,000mAh at 3.7V): no approval needed','100-160Wh: max 2, carry-on, approval required','Total spare+power banks: max 20 per person','Must be individually protected vs short circuit','3√ó20,000mAh within limits: permitted carry-on; no use/charge']:
+s.id===2?['NOTOC with lithium in cargo: drill 12FZ','12=fire/heat/smoke; Z=suppression may NOT work ‚Üí LAND IMMEDIATELY','POC: must bear manufacturer label or FAA SFAR 106']:
+s.id===3?['E-cigs: carry-on ONLY ‚Äî remove from checked bag immediately','Protected vs accidental activation; illegal to bring into Thailand','Dry ice: max 2.5kg/person; mark package; PIC informed']:
+s.id===4?['Wheelchair lithium-ion 200Wh: OK as installed mobility battery','Approval: ASM/SMT + BKKRC-A2 prior','PIC informed; LM provides details']:
+s.id===5?['E-cig in lav: forbidden to use/charge onboard','Fine 20,000 THB; safety violations up to 5yr/200,000 THB','Report to CIC; if smouldering = fire']:
+s.id===6?['Smart bag non-removable >2.7Wh: FORBIDDEN ‚Äî refuse','Removable: must remove for checked; carry battery in cabin','Mercury thermometer: max 1, checked only, protective case']:
+s.id===7?['DG Kit at Spare Air Hostess Kit: poly bags, rubber gloves, bag ties','Camping equip hidden DG: butane, kerosene, matches ‚Äî seek confirmation']:
+s.id===8?['Mobility 280Wh: OK installed; if can\'t protect: remove to cabin','Removed: max 300Wh each or 2√ó160Wh','ELT varies by config']:
+s.id===9?['Ammo Div 1.4S: max 5kg, checked only, PIC informed','Approval: BKKRC-A2 prior','TG-01: THAI does NOT accept DG in excepted quantities']:
+['Hidden DG: aerosols may be flammable/non-flammable/toxic','Seek confirmation from passenger','Catering dry ice: NOT subject to DGR (operator property 6.4.4)','Red diamond+flame = Class 3 Flammable Liquid'],
+'Difference between DG needing approval vs completely forbidden?','Allows forbidden items; wrong checked/carry-on rules');
+
+add('Boarding','DGR','dgr',`<span class="ask">Complete lithium battery rules ‚Äî installed vs spare, limits.</span>`,['PED up to 100Wh/2g: checked or carry-on; max 15 PED; checked must be OFF','Spare up to 100Wh: CARRY-ON ONLY; max 20; individually protected','Spare 100-160Wh: carry-on only; max 2; approval; PIC informed','Power banks = spare batteries','Spare NEVER in checked baggage','Smart bag: removable must remove if checked; non-removable >2.7Wh = FORBIDDEN'],'Pax has 16 PEDs + 5 spares ‚Äî within limits?','Allows spare in checked; does not know 100Wh threshold');
+
+add('Emergency','DGR','dgr',`<span class="sc">${s.dgr.split('.').slice(1).join('.')}</span><span class="ask">Walk me through the DG incident procedure.</span>`,
+s.id===1?['Overhead bin PED fire ‚Äî ICAO 3.3.2:','1. FIREFIGHT: extinguisher + PBE + move pax + notify PIC','2. IDENTIFY: remove other bags to find item','3. DOUSE WITH WATER','4. WHEN COOLED (~10-15min): submerge in water container','5. MONITOR remainder of flight','Do NOT: open affected bag if smoke/flames, remove battery, cover device, use ice']:
+s.id===4?['Spillage/leakage ‚Äî ICAO 3.3.6:','1. Notify PIC','2. Identify item','3. GET DG KIT (Spare Air Hostess Kit)','4. Don gloves + smoke hood','5. Move pax; distribute wet towels','6. Place item in poly bags','7. Stow away from flight deck/pax','8. Treat seat cushions same way','9. Cover floor spillage','10. Inspect regularly','11. After landing: advise ground']:
+s.id===5?['Lav fire: extinguisher on waste bin','Phone ICAO 3.3.1:','1. Identify','2. Firefight','3. Remove power (NOT battery)','4. Douse with water','5. Leave in place, monitor ‚Äî no cover, no ice','6. When cooled: submerge in water','7. Monitor']:
+s.id===6?['PED in seat ‚Äî ICAO 3.3.4:','1. Notify PIC','2. Get info from pax','3. Protective equipment','4. Retrieve ‚Äî do NOT move seat electrically','5. If smoke: apply 3.3.1','Mercury break: collect with gloves, ventilate']:
+['Follow applicable ICAO procedure for the scenario','DG kit ready; don PPE; notify PIC','After landing: advise ground of items and locations'],
+'What if you cannot identify the substance?','Touches without gloves; covers device; uses ice');
+
+add('Emergency','DGR','dgr',`<span class="ask">Drill codes ‚Äî how do they work? Example for lithium batteries.</span>`,['ICAO Doc 9481 Section 4','Number (1-12): primary hazard','Letter(s): subsidiary hazards','Lithium (UN 3480/3481) = 12FZ','12=fire/heat/smoke/toxic vapor ‚Üí LAND IMMEDIATELY','F=flammable; Z=suppression may NOT work ‚Üí LAND IMMEDIATELY','Other: 3H=flammable liquid/highly ignitable','Letters: A=anaesthetic, C=corrosive, P=toxic, W=wet‚Üítoxic gas'],'What does 6P mean?','Does not know drill codes exist; cannot explain system');
+
+add('Emergency','DGR','dgr',`<span class="ask">DG Emergency Response Kit ‚Äî location, contents, improvised alternatives.</span>`,['At Spare Air Hostess Kit','Poly bags, rubber gloves, bag ties','Improvised: catering boxes, oven gloves, blankets for spillage, wet towels for breathing (better than pax O2 masks), galley poly bags','Hands: fire-resistant gloves + poly bags over them'],'Why wet towels > pax O2 masks?','Wrong location; cannot name contents');
+
+add('Post-Event','DGR','dgr',`<span class="ask">What is a reportable DG occurrence? Form? Timeline?</span>`,['Reportable: undeclared/misdeclared DG, forbidden DG found on pax, improper loading/segregation, NOTOC errors, package damage/leakage, wheelchair not secured, missing NOTOC info','Form 1693-O or iQSMS','Timeline: 72 hours','Flight occurrences: also ASR to OB','Submit to CAAT: safetyreport@caat.or.th','Retention: 24 months (occurrence), 6 months (DG docs)'],'Accident vs incident reporting difference?','Does not know 72hr; does not know form; thinks only PIC reports');
+
+add('Post-Event','DGR','dgr',`<span class="ask">Cabin crew\'s 3 specific DG duties per TDGM.</span>`,['1. Ensure provisions for pax DG (Table 9-1) are complied with','2. Respond to DG incidents/accidents in the cabin','3. Report prohibited DG found (after boarding) to PIC','Additionally: alert pax that certain items prohibited in checked bag (spare lithium, e-cigs, fuel cells, mercury barometer)'],'What items must you specifically warn pax about for checked bags?','Cannot name the 3 duties; thinks DG is ground staff only');
+
+// ‚îÄ‚îÄ SECURITY (5) ‚îÄ‚îÄ
+add('Pre-Flight','Security','sec',`<span class="sc">${s.sec.split('.')[0]}.</span><span class="ask">Difference between security CHECK and SEARCH? When each?</span>`,['CHECK: visual inspection after ground staff leave (~10min before boarding); life vest 25% random','SEARCH: thorough; when aircraft >12hr parked, unattended, from maintenance, increased threat; life vest as required (EU inbound 5-10%)','Both: CIC orders PA; crew report station by station (fwd, L to R); CIC confirms','PA wording differs: "security CHECK completed" vs "security SEARCH completed"'],'Exact PA wording difference?','Cannot distinguish; does not know 25% rate');
+
+add('Pre-Flight','Security','sec',`<span class="ask">Access Control Form ‚Äî purpose, management, who keeps it?</span>`,['Prevents unauthorized persons during/after security check','Crew at opened door records: name, purpose, function, time in/out','Before closing last door: CIC verifies all ground personnel departed','CIC keeps form until end of flight'],'What if ground crew still onboard at door close?','Does not know form exists; does not mention CIC keeps it');
+
+add('Boarding','Security','sec',`<span class="ask">Suspicious unattended item found. Procedure?</span>`,['Do NOT touch or move','Note exact position','Advise crew stand away','Inform CIC immediately ‚Üí CIC‚ÜíPIC','PIC notifies ground security/station management','Do not use radio near item if bomb suspected'],'What if pax claims it after you reported?','Touches item; does not report CIC first');
+
+add('Post-Event','Security','sec',`<span class="ask">Post-flight security check procedure and reporting?</span>`,['After disembarkation at transit and destination','Check: overheads, seat pockets, lavs, galleys','Follow pax exit path, section by section','Report: AFT first, then right, then left','CIC‚ÜíPIC acknowledges','Items left: removed/dealt with before departure','Suspicious: do not touch ‚Üí CIC‚ÜíPIC'],'Transit vs destination difference?','Wrong direction; skips lavs');
+
+add('Cruise','Security','sec',`<span class="ask">Flight deck security ‚Äî door, CCTV, codes?</span>`,['Door closed from first pax boarded; LOCKED from all doors closed to last pax disembarked','CCTV monitors entire area outside','Open decision: PIC or senior flight crew only','Entry: interphone + CDSS/viewing lens','PIC establishes 2 codes per flight: Identification Code (normal) and Emergency Code (under duress)','USA flights: only crew + CAA inspector'],'What is Emergency Code for?','Does not know 2 codes; thinks door unlocked in flight');
+
+return Q;
+}
+
+// === STATE ===
+let ST={instructor:JSON.parse(localStorage.getItem('tg_instr')||'null'),assessments:JSON.parse(localStorage.getItem('tg_assess')||'[]'),cur:null,rubVis:false};
+function save(){localStorage.setItem('tg_instr',JSON.stringify(ST.instructor));localStorage.setItem('tg_assess',JSON.stringify(ST.assessments));}
+
+function nav(n){
+  document.querySelectorAll('[id^="screen-"]').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('screen-'+n)?.classList.remove('hidden');
+  document.querySelectorAll('.header-btn').forEach(b=>b.classList.remove('active'));
+  if(n==='landing')document.getElementById('nav-landing').classList.add('active');
+  else if(n==='dashboard'){document.getElementById('nav-dash').classList.add('active');renderDash();}
+  else if(n==='history'){document.getElementById('nav-hist').classList.add('active');renderHist();}
+  else if(n==='new')renderNew();
+  window.scrollTo(0,0);
+}
+
+function saveInstr(){
+  const nm=document.getElementById('instrName').value.trim();
+  if(!nm){alert('Please enter your name.');return;}
+  ST.instructor={name:nm,pers:document.getElementById('instrPers').value.trim()};save();nav('dashboard');
+}
+
+function renderDash(){
+  if(!ST.instructor){nav('landing');return;}
+  document.getElementById('instrDisp').textContent=ST.instructor.name+(ST.instructor.pers?' ('+ST.instructor.pers+')':'');
+  let h='';
+  if(!ST.assessments.length)h='<p style="color:var(--text-light);font-size:0.85rem;">No assessments yet.</p>';
+  else{h='<table class="t-table"><thead><tr><th>Trainee</th><th>Scenario</th><th>Config</th><th>#</th><th>Status</th><th></th></tr></thead><tbody>';
+  ST.assessments.forEach((a,i)=>{const sc=SC.find(x=>x.id===a.sid);const st=a.done?(a.result==='PASSED'?'completed':'failed'):'pending';const tx=a.done?a.result:'In Progress';
+  h+=`<tr><td><strong>${a.nm}</strong><br><span style="font-size:0.75rem;color:var(--text-light)">${a.pn}</span></td><td>${sc?.t||'-'}</td><td>${a.cfg}</td><td>${a.att}</td><td><span class="status-badge ${st}">${tx}</span></td><td>${a.done?'<button class="btn btn-outline btn-sm" onclick="viewRes('+i+')">View</button>':'<button class="btn btn-accent btn-sm" onclick="resume('+i+')">Resume</button>'}</td></tr>`;});
+  h+='</tbody></table>';}
+  document.getElementById('activeList').innerHTML=h;
+  let c='';SC.forEach(s=>{c+=`<div class="case-card"><div class="cn">Scenario ${s.id}</div><div class="ct">${s.t}</div><div class="cr">${s.r} &middot; ${s.em}</div></div>`;});
+  document.getElementById('caseLib').innerHTML=c;
+}
+
+function renderNew(){
+  const sel=document.getElementById('tScen');sel.innerHTML='';SC.forEach(s=>{sel.innerHTML+=`<option value="${s.id}">#${s.id}: ${s.t}</option>`;});
+  document.getElementById('tDate').value=new Date().toISOString().split('T')[0];
+}
+
+function startAssess(){
+  const nm=document.getElementById('tName').value.trim();if(!nm){alert('Enter trainee name.');return;}
+  const cfg=document.getElementById('tConfig').value,sid=+document.getElementById('tScen').value,att=+document.getElementById('tAttempt').value,dt=document.getElementById('tDate').value;
+  const qs=buildQs(SC.find(x=>x.id===sid),cfg);
+  ST.assessments.push({id:Date.now(),nm,pn:document.getElementById('tPers').value.trim(),cfg,sid,att,dt,qs,done:false,result:null,ts:{}});
+  ST.cur=ST.assessments.length-1;save();renderAssess();nav('assess');
+}
+
+function resume(i){ST.cur=i;renderAssess();nav('assess');}
+
+function renderAssess(){
+  const a=ST.assessments[ST.cur],sc=SC.find(x=>x.id===a.sid);
+  document.getElementById('aName').textContent=a.nm;
+  document.getElementById('aMeta').textContent=` ‚Äî ${sc.r} ‚Äî ${a.cfg} ‚Äî Attempt ${a.att} ‚Äî ${a.dt}`;
+  const scored=a.qs.filter(q=>q.score!==null).length;
+  document.getElementById('aProg').style.width=Math.round(scored/a.qs.length*100)+'%';
+  let h='',cp='';
+  a.qs.forEach((q,i)=>{
+    if(q.phase!==cp){cp=q.phase;h+=`<div class="phase-divider"><span class="pl"></span><span class="pt">${cp}</span><span class="pl"></span></div>`;}
+    const tc={'sop':'t-sop','exit':'t-exit','o2':'t-o2','eq':'t-eq','ep':'t-ep','dgr':'t-dgr','sec':'t-sec'}[q.tc]||'';
+    h+=`<div class="q-card" id="q-${i}"><div class="q-header"><span class="q-num">Q${q.id}</span><div><span class="phase-badge">${q.phase}</span><span class="topic-badge ${tc}">${q.topic}</span></div></div><div class="q-body"><div class="q-prompt">${q.prompt}</div><div class="q-rubric" id="r-${i}"><h4>Expected Key Points</h4><ul>${q.rubric.map(r=>'<li>'+r+'</li>').join('')}</ul>${q.dp?'<div class="dp"><strong>Depth Probe:</strong> '+q.dp+'</div>':''}${q.rf?'<div class="rf"><strong>Red Flags:</strong> '+q.rf+'</div>':''}</div><div class="q-actions"><button class="btn-rubric" id="rb-${i}" onclick="togR(${i})">Rubric</button><div style="flex:1"></div><div class="score-btns"><button class="score-btn sb ${q.score==='S'?'active':''}" onclick="sc(${i},'S')">S</button><button class="score-btn ub ${q.score==='U'?'active':''}" onclick="sc(${i},'U')">U</button></div></div><div class="q-notes"><textarea placeholder="Notes..." oninput="nt(${i},this.value)">${q.notes||''}</textarea></div></div></div>`;
+  });
+  document.getElementById('aQs').innerHTML=h;
+}
+
+function togR(i){const e=document.getElementById('r-'+i),b=document.getElementById('rb-'+i);if(e.style.display==='block'){e.style.display='none';b.classList.remove('open');}else{e.style.display='block';b.classList.add('open');}}
+function toggleAll(){ST.rubVis=!ST.rubVis;ST.assessments[ST.cur].qs.forEach((_,i)=>{const e=document.getElementById('r-'+i),b=document.getElementById('rb-'+i);e.style.display=ST.rubVis?'block':'none';b.classList.toggle('open',ST.rubVis);});}
+function sc(i,v){const a=ST.assessments[ST.cur];a.qs[i].score=a.qs[i].score===v?null:v;save();const c=document.getElementById('q-'+i);c.querySelector('.sb').classList.toggle('active',a.qs[i].score==='S');c.querySelector('.ub').classList.toggle('active',a.qs[i].score==='U');document.getElementById('aProg').style.width=Math.round(a.qs.filter(q=>q.score!==null).length/a.qs.length*100)+'%';}
+function nt(i,v){ST.assessments[ST.cur].qs[i].notes=v;save();}
+
+function finish(){
+  const a=ST.assessments[ST.cur],un=a.qs.filter(q=>q.score===null).length;
+  if(un&&!confirm(un+' question(s) unscored. They count as Unsatisfied. Continue?'))return;
+  const tops={'SOP':{qs:[]},'Exit':{qs:[]},'O2 System':{qs:[]},'Equipment':{qs:[]},'Emergency Proc':{qs:[]},'DGR':{qs:[]},'Security':{qs:[]}};
+  a.qs.forEach(q=>{if(tops[q.topic])tops[q.topic].qs.push(q);});
+  a.ts={};let uc=0;
+  Object.keys(tops).forEach(k=>{const qs=tops[k].qs,s=qs.filter(q=>q.score==='S').length,t=qs.length,th=Math.ceil(t*0.7),ok=s>=th;a.ts[k]={s,t,ok,th};if(!ok)uc++;});
+  const main={'1. SOP':a.ts.SOP?.ok,'2. Emergency Exit':a.ts.Exit?.ok,'3. Oxygen System':a.ts['O2 System']?.ok,'4. Equipment':a.ts.Equipment?.ok,'5. Emergency Proc':a.ts['Emergency Proc']?.ok,'6. Others':a.ts.DGR?.ok&&a.ts.Security?.ok};
+  a.result=Object.values(main).filter(v=>!v).length<=1?'PASSED':'FAILED';a.done=true;save();viewRes(ST.cur);
+}
+
+function viewRes(idx){
+  const a=ST.assessments[idx],sc=SC.find(x=>x.id===a.sid);
+  let h=`<div style="text-align:center;margin-bottom:20px"><h2 style="margin-bottom:4px">Cabin Crew Base Release Check</h2><div style="font-size:0.8rem;color:var(--text-light)">PBA-FM 226 &middot; A350-900</div></div>`;
+  h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;font-size:0.85rem"><div><strong>Trainee:</strong> ${a.nm}</div><div><strong>Pers:</strong> ${a.pn}</div><div><strong>Config:</strong> ${a.cfg}</div><div><strong>Date:</strong> ${a.dt}</div><div><strong>Scenario:</strong> ${sc?.t||'-'}</div><div><strong>Attempt:</strong> ${a.att}</div><div><strong>Checked by:</strong> ${ST.instructor?.name||'-'}</div></div>`;
+  h+='<div class="ts"><div class="th">Topic</div><div class="th" style="text-align:center">Score</div><div class="th" style="text-align:center">Result</div>';
+  [{l:'1. Standard Operating Procedures',k:'SOP'},{l:'2. Emergency Exit',k:'Exit'},{l:'3. Oxygen System',k:'O2 System'},{l:'4. Emergency Equipment',k:'Equipment'},{l:'5. Emergency Procedures',k:'Emergency Proc'},{l:'6a. Dangerous Goods',k:'DGR'},{l:'6b. Security',k:'Security'}].forEach(t=>{
+    const v=a.ts[t.k];if(!v)return;h+=`<div class="tc">${t.l}</div><div class="tc" style="justify-content:center">${v.s}/${v.t}</div><div class="tc ${v.ok?'ts-s':'ts-u'}">${v.ok?'SATISFIED':'UNSATISFIED'}</div>`;});
+  h+='</div>';
+  h+=`<div class="overall-result ${a.result==='PASSED'?'pass':'fail'}">${a.result}</div>`;
+  h+=a.result==='PASSED'?'<p style="text-align:center;color:var(--text-mid);font-size:0.9rem;margin:12px 0">The trainee has demonstrated satisfactory competency for Base Release on the A350-900.</p>':'';
+  h+='<hr style="margin:20px 0;border:none;border-top:1px solid var(--border)"><h3 style="margin-bottom:12px">Unsatisfied / Noted Questions</h3>';
+  a.qs.forEach(q=>{if(q.score==='U'||q.notes)h+=`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.85rem"><strong>Q${q.id}</strong> (${q.topic}) ‚Äî <span style="color:${q.score==='S'?'var(--success)':'var(--error)'}">${q.score||'N/A'}</span>${q.notes?'<div style="color:var(--text-mid);margin-top:4px"><em>'+q.notes+'</em></div>':''}</div>`;});
+  h+=`<div style="margin-top:20px;display:flex;gap:8px"><button class="btn btn-outline" onclick="nav('dashboard')">Dashboard</button><button class="btn btn-primary" onclick="window.print()">Print Report</button></div>`;
+  document.getElementById('resC').innerHTML=h;nav('results');
+}
+
+function renderHist(){
+  const done=ST.assessments.filter(a=>a.done);
+  if(!done.length){document.getElementById('histC').innerHTML='<p style="color:var(--text-light);font-size:0.85rem">No completed assessments.</p>';return;}
+  let h='<table class="t-table"><thead><tr><th>Trainee</th><th>Date</th><th>Config</th><th>#</th><th>Result</th><th></th></tr></thead><tbody>';
+  ST.assessments.forEach((a,i)=>{if(!a.done)return;h+=`<tr><td>${a.nm}</td><td>${a.dt}</td><td>${a.cfg}</td><td>${a.att}</td><td><span class="status-badge ${a.result==='PASSED'?'completed':'failed'}">${a.result}</span></td><td><button class="btn btn-outline btn-sm" onclick="viewRes(${i})">View</button></td></tr>`;});
+  h+='</tbody></table>';document.getElementById('histC').innerHTML=h;
+}
+
+// Init
+if(ST.instructor){document.getElementById('btn-start').textContent='Go to Dashboard';document.getElementById('btn-start').onclick=()=>nav('dashboard');}
+</script>
+</body>
+</html>
