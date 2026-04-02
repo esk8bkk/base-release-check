@@ -133,7 +133,8 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
 
 .case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
 .case-card{border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;}
-.case-card:hover{border-color:var(--slate);box-shadow:var(--shadow-md);}
+.case-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.case-card:active{transform:translateY(0);box-shadow:var(--shadow);}
 .case-card .cn{font-size:0.7rem;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;}
 .case-card .ct{font-weight:600;color:var(--navy);margin:6px 0 4px;font-size:0.95rem;}
 .case-card .cr{font-size:0.8rem;color:var(--text-light);}
@@ -500,8 +501,13 @@ function renderDash(){
   h+=`<tr><td><strong>${a.nm}</strong><br><span style="font-size:0.75rem;color:var(--text-light)">${a.pn}</span></td><td>${sc?.t||'-'}</td><td>${a.cfg}</td><td>${a.att}</td><td><span class="status-badge ${st}">${tx}</span></td><td>${a.done?'<button class="btn btn-outline btn-sm" onclick="viewRes('+i+')">View</button>':'<button class="btn btn-accent btn-sm" onclick="resume('+i+')">Resume</button>'}</td></tr>`;});
   h+='</tbody></table>';}
   document.getElementById('activeList').innerHTML=h;
-  let c='';SC.forEach(s=>{c+=`<div class="case-card"><div class="cn">Scenario ${s.id}</div><div class="ct">${s.t}</div><div class="cr">${s.r} &middot; ${s.em}</div></div>`;});
+  let c='';SC.forEach(s=>{c+=`<div class="case-card" onclick="quickStart(${s.id})" style="cursor:pointer;" title="Click to start assessment with this scenario"><div class="cn">Scenario ${s.id}</div><div class="ct">${s.t}</div><div class="cr">${s.r} &middot; ${s.em}</div><div style="margin-top:8px;"><span style="font-size:0.7rem;color:var(--accent);font-weight:600;">&#9654; TAP TO START</span></div></div>`;});
   document.getElementById('caseLib').innerHTML=c;
+}
+
+function quickStart(sid){
+  renderNew();nav('new');
+  document.getElementById('tScen').value=sid;
 }
 
 function renderNew(){
