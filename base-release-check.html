@@ -78,6 +78,10 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
 .btn-outline{background:transparent;color:var(--navy);border:1px solid var(--border);}
 .btn-outline:hover{background:var(--bg);}
 .btn-sm{padding:7px 14px;font-size:0.8rem;}
+.btn-danger{background:var(--error);color:#fff;}
+.btn-danger:hover{background:#a93226;}
+.btn-del{background:transparent;border:1px solid var(--border);color:var(--text-light);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:0.9rem;margin-left:4px;transition:all 0.15s;vertical-align:middle;}
+.btn-del:hover{background:var(--error-bg);color:var(--error);border-color:var(--error);}
 .btn-block{width:100%;}
 
 /* Assessment */
@@ -520,8 +524,8 @@ function renderDash(){
   if(!ST.assessments.length)h='<p style="color:var(--text-light);font-size:0.85rem;">No assessments yet.</p>';
   else{h='<table class="t-table"><thead><tr><th>Trainee</th><th>Scenario</th><th>Config</th><th>#</th><th>Status</th><th></th></tr></thead><tbody>';
   ST.assessments.forEach((a,i)=>{const sc=SC.find(x=>x.id===a.sid);const st=a.done?(a.result==='PASSED'?'completed':'failed'):'pending';const tx=a.done?a.result:'In Progress';
-  h+=`<tr><td><strong>${a.nm}</strong><br><span style="font-size:0.75rem;color:var(--text-light)">${a.pn}</span></td><td>${sc?.t||'-'}</td><td>${a.cfg}</td><td>${a.att}</td><td><span class="status-badge ${st}">${tx}</span></td><td>${a.done?'<button class="btn btn-outline btn-sm" onclick="viewRes('+i+')">View</button>':'<button class="btn btn-accent btn-sm" onclick="resume('+i+')">Resume</button>'}</td></tr>`;});
-  h+='</tbody></table>';}
+  h+=`<tr><td><strong>${a.nm}</strong><br><span style="font-size:0.75rem;color:var(--text-light)">${a.pn}</span></td><td>${sc?.t||'-'}</td><td>${a.cfg}</td><td>${a.att}</td><td><span class="status-badge ${st}">${tx}</span></td><td style="white-space:nowrap;">${a.done?'<button class="btn btn-outline btn-sm" onclick="viewRes('+i+')">View</button>':'<button class="btn btn-accent btn-sm" onclick="resume('+i+')">Resume</button>'} <button class="btn-del" onclick="delAssess(${i})" title="Delete assessment">&#128465;</button></td></tr>`;});
+  h+='</tbody></table><div style="margin-top:14px;text-align:right;"><button class="btn btn-danger btn-sm" onclick="resetAll()" title="Delete all assessments and reset">&#9888; Reset All Data</button></div>';}
   document.getElementById('activeList').innerHTML=h;
   let c='';SC.forEach(s=>{c+=`<div class="case-card" onclick="quickStart(${s.id})" style="cursor:pointer;" title="Click to start assessment with this scenario"><div class="cn">Scenario ${s.id}</div><div class="ct">${s.t}</div><div class="cr">${s.r} &middot; ${s.em}</div><div style="margin-top:8px;"><span style="font-size:0.7rem;color:var(--accent);font-weight:600;">&#9654; TAP TO START</span></div></div>`;});
   document.getElementById('caseLib').innerHTML=c;
@@ -546,6 +550,25 @@ function startAssess(){
 }
 
 function resume(i){ST.cur=i;renderAssess();nav('assess');}
+
+function delAssess(i){
+  const a=ST.assessments[i];
+  if(!confirm(`Delete assessment for "${a.nm}"?\n\nThis cannot be undone.`))return;
+  ST.assessments.splice(i,1);
+  if(ST.cur===i)ST.cur=null;
+  else if(ST.cur!==null&&ST.cur>i)ST.cur--;
+  save();renderDash();
+}
+
+function resetAll(){
+  if(!ST.assessments.length){alert('No assessments to reset.');return;}
+  const n=ST.assessments.length;
+  if(!confirm(`⚠ RESET ALL DATA?\n\nThis will permanently delete:\n• ${n} assessment(s)\n• All scores and notes\n\nInstructor profile will be kept.\n\nThis cannot be undone. Continue?`))return;
+  if(!confirm('Are you absolutely sure? This is your last chance to cancel.'))return;
+  ST.assessments=[];ST.cur=null;
+  save();renderDash();
+  alert('All assessment data has been reset.');
+}
 
 let activeTopic='sop';
 const TOPIC_ORDER=[{tc:'sop',label:'SOP'},{tc:'exit',label:'Exit'},{tc:'o2',label:'O\u2082'},{tc:'eq',label:'Equip'},{tc:'ep',label:'EP'},{tc:'dgr',label:'DGR'},{tc:'sec',label:'Sec'}];
